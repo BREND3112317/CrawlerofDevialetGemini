@@ -96,13 +96,11 @@ def checkPage():
     html_soup = BeautifulSoup(resp.text, 'html.parser')
 
     data = html_soup.select(".product__synthesis")
+    price = data[0].select(".product-price")
+    status = data[0].select(".product__add-to-cart__buttons")
+
     if (data_before['text'] != data[0].text):
         print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "]", "網址資訊已更新 - 開始更新本地資料並寄出資訊")
-        price = data[0].select(".product-price")
-        status = data[0].select(".product__add-to-cart__buttons")
-        print(type(data[0].text), data[0].text)
-        print("price", price[0].text)
-        print("status", status[0].text)
         data_before['price'] = str(price[0].text)
         data_before['status'] = str(status[0].text)
         data_before['text'] = str(data[0].text)
@@ -112,6 +110,10 @@ def checkPage():
         postMail()
     else:
         print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "]","網址資訊尚未更新 - 等待5分鐘後嘗試重新讀取、確認")
+    
+    # print(type(data[0].text), data[0].text)
+    print("price", price[0].text)
+    print("status", status[0].text)
 
 
 schedule_time=5
