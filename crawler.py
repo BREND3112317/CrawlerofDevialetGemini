@@ -79,9 +79,10 @@ def getWebPagePhoto():
     while try_c > 0:
         sleep(try_time)
         try:
-            print("ACCEPT ALL COOKIES - button try: " + str(try_c))
             driver.find_element_by_xpath('//*[@id="onetrust-accept-btn-handler"]').click()
-        finally: 
+        except:
+            print("ACCEPT ALL COOKIES - click failed, try again: " + str(try_c))
+        else: 
             print("ACCEPT ALL COOKIES - button click success")
             break
         try_c -= 1
@@ -96,24 +97,28 @@ def checkPage():
     html_soup = BeautifulSoup(resp.text, 'html.parser')
 
     data = html_soup.select(".product__synthesis")
-    price = data[0].select(".product-price")
-    status = data[0].select(".product__add-to-cart__buttons")
+    try:
+        price = data[0].select(".product-price")
+        status = data[0].select(".product__add-to-cart__buttons")
 
-    if (data_before['text'] != data[0].text):
-        print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "]", "網址資訊已更新 - 開始更新本地資料並寄出資訊")
-        data_before['price'] = str(price[0].text)
-        data_before['status'] = str(status[0].text)
-        data_before['text'] = str(data[0].text)
-        data_before['time'] = strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        updatedSittingText(data_before)
-        getWebPagePhoto()
-        postMail()
-    else:
-        print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "]","網址資訊尚未更新 - 等待5分鐘後嘗試重新讀取、確認")
-    
-    # print(type(data[0].text), data[0].text)
-    print("price", price[0].text)
-    print("status", status[0].text)
+        if (data_before['text'] != data[0].text):
+            print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "] [System] [Success]", "網址資訊已更新 - 開始更新本地資料並寄出資訊")
+            data_before['price'] = str(price[0].text)
+            data_before['status'] = str(status[0].text)
+            data_before['text'] = str(data[0].text)
+            data_before['time'] = strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            updatedSittingText(data_before)
+            getWebPagePhoto()
+            postMail()
+        else:
+            print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "] [System] [Success]","網址資訊尚未更新 - 等待5分鐘後嘗試重新讀取、確認")
+        
+        # print(type(data[0].text), data[0].text)
+        print("price", price[0].text)
+        print("status", status[0].text)
+    except:
+        print("[" + strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + "] [System] [Failed]", "網址資訊取得失敗，等待下次執行")
+
 
 
 schedule_time=5
