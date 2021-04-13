@@ -2,7 +2,6 @@ import sys
 import requests
 import json
 import schedule
-from datetime import datetime
 import time
 from time import sleep
 from time import gmtime, strftime
